@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.tmdbtest.model.response.MovieDetailModel;
 import com.example.tmdbtest.model.response.MovieModel;
 import com.example.tmdbtest.model.response.MovieResponseModel;
 import com.example.tmdbtest.service.APIs;
@@ -23,6 +24,8 @@ public class MovieRepository {
     public MutableLiveData<List<MovieModel>> nowPlayingLiveData = new MutableLiveData<>();
     public MutableLiveData<List<MovieModel>> popularLiveData = new MutableLiveData<>();
     public MutableLiveData<List<MovieModel>> upcomingLiveData = new MutableLiveData<>();
+
+    public MutableLiveData<MovieDetailModel> movieDetailLiveData = new MutableLiveData<>();
 
     public void getNowPlayingMovies(Context context) {
 
@@ -93,5 +96,29 @@ public class MovieRepository {
             }
         });
     }
+
+    public void getDetail(int movieId, Context context) {
+
+        Call<MovieDetailModel> callResponse = apiService.getDetail(movieId, Utils.API_KEY);
+
+        callResponse.enqueue(new Callback<MovieDetailModel>() {
+            @Override
+            public void onResponse(Call<MovieDetailModel> call, Response<MovieDetailModel> response) {
+                if (response.isSuccessful()) {
+                    MovieDetailModel movieResponseModel = response.body();
+                    movieDetailLiveData.postValue(movieResponseModel);
+
+                } else {
+                    Toast.makeText(context, "Some error occurred!!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieDetailModel> call, Throwable t) {
+                Toast.makeText(context, "Some error occurred!!!" + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
 }

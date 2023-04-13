@@ -1,6 +1,8 @@
 package com.example.tmdbtest.ui.adapter;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tmdbtest.R;
 import com.example.tmdbtest.model.response.MovieModel;
+import com.example.tmdbtest.ui.activity.DetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
+    Context context;
     List<MovieModel> movieModelList;
 
-    public MovieAdapter(List<MovieModel> movieModelList) {
+    public MovieAdapter(Context context, List<MovieModel> movieModelList) {
+        this.context = context;
         this.movieModelList = movieModelList;
     }
 
@@ -37,6 +42,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         Picasso.get()
                 .load("https://image.tmdb.org/t/p/original/" + movieModelList.get(position).getPosterPath())
                 .into(holder.ivPhoto);
+        holder.itemView.setOnClickListener(view -> {
+            Intent i = new Intent(context, DetailActivity.class);
+            i.putExtra("movieId", movieModelList.get(position).getId());
+            context.startActivity(i);
+        });
     }
 
     @Override

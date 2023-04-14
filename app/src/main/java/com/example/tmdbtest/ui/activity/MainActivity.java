@@ -31,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
         ivUpcoming = findViewById(R.id.ivUpcoming);
 
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
-        movieViewModel.getNowPlayingMovies(this);
-        movieViewModel.getPopularMovies(this);
-        movieViewModel.getUpcomingMovies(this);
+        movieViewModel.getNowPlayingMovies(this, 1);
+        movieViewModel.getPopularMovies(this, 1);
+        movieViewModel.getUpcomingMovies(this, 1);
         observeNowPlayingMovies();
         observePopularMovies();
         observeUpcomingMovies();

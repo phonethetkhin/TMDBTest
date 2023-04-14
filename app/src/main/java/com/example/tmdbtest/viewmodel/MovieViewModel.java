@@ -19,16 +19,16 @@ public class MovieViewModel extends ViewModel {
     public LiveData<List<MovieModel>> upcomingLiveData = movieRepository.upcomingLiveData;
     public LiveData<MovieDetailModel> movieDetailLiveData = movieRepository.movieDetailLiveData;
 
-    public void getNowPlayingMovies(Context context) {
-        movieRepository.getNowPlayingMovies(context);
+    public void getNowPlayingMovies(Context context, int pageNum) {
+        movieRepository.getNowPlayingMovies(context, pageNum);
     }
 
-    public void getPopularMovies(Context context) {
-        movieRepository.getPopularMovie(context);
+    public void getPopularMovies(Context context, int pageNum) {
+        movieRepository.getPopularMovie(context, pageNum);
     }
 
-    public void getUpcomingMovies(Context context) {
-        movieRepository.getUpcomingMovies(context);
+    public void getUpcomingMovies(Context context, int pageNum) {
+        movieRepository.getUpcomingMovies(context, pageNum);
     }
 
     public void getDetail(int movieId, Context context) {

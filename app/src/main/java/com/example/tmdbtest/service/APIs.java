@@ -10,13 +10,13 @@ import retrofit2.http.Query;
 
 public interface APIs {
     @GET("movie/now_playing")
-    Call<MovieResponseModel> getNowPlayingMovies(@Query("api_key") String apiKey);
+    Call<MovieResponseModel> getNowPlayingMovies(@Query("api_key") String apiKey, @Query("page") int pageNum);
 
     @GET("movie/popular")
-    Call<MovieResponseModel> getPopularMovies(@Query("api_key") String apiKey);
+    Call<MovieResponseModel> getPopularMovies(@Query("api_key") String apiKey, @Query("page") int pageNum);
 
     @GET("movie/upcoming")
-    Call<MovieResponseModel> getUpcomingMovies(@Query("api_key") String apiKey);
+    Call<MovieResponseModel> getUpcomingMovies(@Query("api_key") String apiKey, @Query("page") int pageNum);
 
     @GET("movie/{movie_id}")
     Call<MovieDetailModel> getDetail(@Path("movie_id") int movieId, @Query("api_key") String apiKey);

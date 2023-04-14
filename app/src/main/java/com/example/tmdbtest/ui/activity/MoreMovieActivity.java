@@ -1,10 +1,13 @@
 package com.example.tmdbtest.ui.activity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tmdbtest.R;
@@ -21,6 +24,9 @@ public class MoreMovieActivity extends AppCompatActivity {
     private MovieViewModel movieViewModel;
     RecyclerView rvMoreMovies;
     private MovieAdapter moreMoviesAdapter;
+    ProgressBar pbLoading;
+    int pageNum = 1;
+    int lastVisiblePosition = 0;
     private List<MovieModel> movieList = new ArrayList<>();
 
     @Override
@@ -28,13 +34,15 @@ public class MoreMovieActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_movie);
         rvMoreMovies = findViewById(R.id.rvMoreMovies);
+        pbLoading = findViewById(R.id.pbLoading);
         status = getIntent().getIntExtra("status", 0);
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
-
+        pbLoading.setVisibility(View.VISIBLE);
         setUI();
         fetchData();
 
         observeData();
+        checkScroll();
     }
 
     private void setUI() {
@@ -52,11 +60,11 @@ public class MoreMovieActivity extends AppCompatActivity {
 
     private void fetchData() {
         if (status == 0) {
-            movieViewModel.getNowPlayingMovies(this);
+            movieViewModel.getNowPlayingMovies(this, pageNum);
         } else if (status == 1) {
-            movieViewModel.getPopularMovies(this);
+            movieViewModel.getPopularMovies(this, pageNum);
         } else {
-            movieViewModel.getUpcomingMovies(this);
+            movieViewModel.getUpcomingMovies(this, pageNum);
         }
     }
 
@@ -72,29 +80,61 @@ public class MoreMovieActivity extends AppCompatActivity {
 
     private void observeNowPlayingMovies() {
         movieViewModel.nowPlayingLiveData.observe(this, movies -> {
-            movieList.addAll(movies);
-            moreMoviesAdapter = new MovieAdapter(this, movieList);
-            rvMoreMovies.setAdapter(moreMoviesAdapter);
+            if (movies != null) {
+                pbLoading.setVisibility(View.GONE);
+                rvMoreMovies.setVisibility(View.VISIBLE);
+                movieList.addAll(movies);
+                moreMoviesAdapter = new MovieAdapter(this, movieList);
+                rvMoreMovies.setAdapter(moreMoviesAdapter);
+            }
         });
     }
 
     private void observePopularMovies() {
         movieViewModel.popularLiveData.observe(this, movies -> {
-            movieList.addAll(movies);
-            moreMoviesAdapter = new MovieAdapter(this, movieList);
+            if (movies != null) {
+                pbLoading.setVisibility(View.GONE);
+                rvMoreMovies.setVisibility(View.VISIBLE);
+                movieList.addAll(movies);
+                moreMoviesAdapter = new MovieAdapter(this, movieList);
 
-            rvMoreMovies.setAdapter(moreMoviesAdapter);
-
+                rvMoreMovies.setAdapter(moreMoviesAdapter);
+            }
         });
     }
 
     private void observeUpcomingMovies() {
         movieViewModel.upcomingLiveData.observe(this, movies -> {
-            movieList.addAll(movies);
-            moreMoviesAdapter = new MovieAdapter(this, movieList);
-
-            rvMoreMovies.setAdapter(moreMoviesAdapter);
+            if (movies != null) {
+                pbLoading.setVisibility(View.GONE);
+                rvMoreMovies.setVisibility(View.VISIBLE);
+                movieList.addAll(movies);
+                moreMoviesAdapter = new MovieAdapter(this, movieList);
+                rvMoreMovies.setAdapter(moreMoviesAdapter);
+            }
 
         });
     }
+
+    private void checkScroll() {
+        rvMoreMovies.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            GridLayoutManager layoutManager = (GridLayoutManager) rvMoreMovies.getLayoutManager();
+            int visibleItemCount = layoutManager.findLastCompletelyVisibleItemPosition();
+            if (visibleItemCount == movieList.size() - 1) {
+                lastVisiblePosition = visibleItemCount;
+                pageNum++;
+                loadNextPage();
+            }
+
+
+        });
+    }
+
+    private void loadNextPage() {
+        rvMoreMovies.scrollToPosition(lastVisiblePosition);
+        pbLoading.setVisibility(View.VISIBLE);
+        rvMoreMovies.setVisibility(View.GONE);
+        fetchData();
+    }
+
 }

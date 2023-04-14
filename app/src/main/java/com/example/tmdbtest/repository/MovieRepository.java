@@ -27,9 +27,9 @@ public class MovieRepository {
 
     public MutableLiveData<MovieDetailModel> movieDetailLiveData = new MutableLiveData<>();
 
-    public void getNowPlayingMovies(Context context) {
+    public void getNowPlayingMovies(Context context, int pageNum) {
 
-        Call<MovieResponseModel> callResponse = apiService.getNowPlayingMovies(Utils.API_KEY);
+        Call<MovieResponseModel> callResponse = apiService.getNowPlayingMovies(Utils.API_KEY, pageNum);
 
         callResponse.enqueue(new Callback<MovieResponseModel>() {
             @Override
@@ -50,9 +50,9 @@ public class MovieRepository {
         });
     }
 
-    public void getPopularMovie(Context context) {
+    public void getPopularMovie(Context context, int pageNum) {
 
-        Call<MovieResponseModel> callResponse = apiService.getPopularMovies(Utils.API_KEY);
+        Call<MovieResponseModel> callResponse = apiService.getPopularMovies(Utils.API_KEY, pageNum);
 
         callResponse.enqueue(new Callback<MovieResponseModel>() {
             @Override
@@ -74,9 +74,9 @@ public class MovieRepository {
     }
 
 
-    public void getUpcomingMovies(Context context) {
+    public void getUpcomingMovies(Context context, int pageNum) {
 
-        Call<MovieResponseModel> callResponse = apiService.getUpcomingMovies(Utils.API_KEY);
+        Call<MovieResponseModel> callResponse = apiService.getUpcomingMovies(Utils.API_KEY, pageNum);
 
         callResponse.enqueue(new Callback<MovieResponseModel>() {
             @Override
